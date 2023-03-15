@@ -1,9 +1,7 @@
 from pathlib import Path
 from prompt_toolkit import Application
-from .editor.layout import create_layout
-from .editor.key_bindings import create_key_bindings
-from .utils.args_parser import parse_command_line_arguments
-from .utils.file_operations import load_file, save_file
+from src.editor import Editor, create_editor_layout, create_key_bindings
+from src.utils.file_operations import load_file, save_file
 
 def create_application(args):
     file_content = None
@@ -13,10 +11,11 @@ def create_application(args):
         if filepath.exists():
             file_content = load_file(filepath)
 
-    layout = create_layout(file_content)
-    key_bindings = create_key_bindings(filepath, save_file)
+    editor = Editor(filepath)
+    layout, status_control = create_editor_layout(editor, file_content)
+    key_bindings = create_key_bindings(editor, save_file, status_control)
 
-    # Create the main application instance for the text editor.
+    # Create the main application instance for the text editor
     app = Application(
         layout=layout,
         key_bindings=key_bindings,
@@ -27,7 +26,3 @@ def create_application(args):
 def run_editor(args):
     app = create_application(args)
     app.run()
-
-if __name__ == '__main__':
-    args = parse_command_line_arguments()
-    run_editor(args)

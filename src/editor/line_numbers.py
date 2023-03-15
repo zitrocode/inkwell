@@ -14,7 +14,7 @@ def create_line_numbers_window(text_buffer, text_window):
             first_visible_line = render_info.first_visible_line()
             height = render_info.window_height
 
-        line_numbers = [(f"{i + 1:3d} │") for i, _ in enumerate(lines)][first_visible_line:first_visible_line + height]
+        line_numbers = [(f"{i + 1:3d} │") for i, _ in enumerate(lines + [''])][first_visible_line:first_visible_line + height]
         empty_lines = ['~   │'] * (max(0, height - len(line_numbers)))
         formatted_text = '\n'.join(line_numbers + empty_lines)
         return Window(content=FormattedTextControl([('class:line-number', formatted_text)], focusable=False), width=5)
